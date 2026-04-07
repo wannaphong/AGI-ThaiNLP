@@ -19,7 +19,10 @@ _THAI_CONSONANTS: str = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒ�
 _ROMANIZED_VOWELS: str = "aeiou"
 
 # Vowel pattern substitutions: (Thai pattern, romanized replacement)
-# Patterns use * as placeholder for Thai consonant class [ก-ฮ]
+# Patterns use * as placeholder for Thai consonant class [ก-ฮ],
+# # as placeholder for ([คนพมห]) (consonants before ฤ → "rue"),
+# $ as placeholder for ([กตทปศส]) (consonants before ฤ → "ri").
+# These placeholders are expanded on lines below via str.replace().
 _VOWEL_PATTERNS_RAW: str = r"""เ*ียว,\1iao
 แ*็ว,\1aeo
 เ*ือย,\1ueai
