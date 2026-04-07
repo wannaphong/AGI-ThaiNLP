@@ -10,6 +10,7 @@ without relying on PyThaiNLP's bundled resources (dictionaries, models, etc.).
 |--------|-------------|
 | `core` | Thai character constants (consonants, vowels, tonemarks, digits, …) |
 | `tokenize.tcc` | Thai Character Cluster (TCC) tokenizer |
+| `tokenize.newmm` | **NewMM** dictionary-based word tokenizer (Maximum Matching + Viterbi DP) |
 | `tokenize.sent` | Rule-based sentence tokenizer |
 | `transliterate.rtgs` | RTGS romanization (Royal Thai General System) |
 | `soundex.udom83` | Udom83 soundex (7-char code) |
@@ -26,9 +27,10 @@ pip install -e .
 ```
 
 ```python
-from agithainlp import tcc_tokenize, romanize, udom83, lk82, collate, num_to_thaiword
+from agithainlp import tcc_tokenize, romanize, udom83, lk82, collate, num_to_thaiword, word_tokenize
 
 print(tcc_tokenize("กาแฟ"))       # ['กา', 'แฟ']
+print(word_tokenize("ผมชอบกินข้าว", keep_whitespace=False))  # ['ผม', 'ชอบ', 'กิน', 'ข้าว']
 print(romanize("กาแฟ"))           # 'kafae'
 print(udom83("รัก"))              # 'ร100000'
 print(lk82("รัก"))               # 'ร1000'
@@ -54,6 +56,7 @@ use agi_thainlp::*;
 
 fn main() {
     println!("{:?}", tcc_tokenize("กาแฟ"));   // ["กา", "แฟ"]
+    println!("{:?}", word_tokenize("ผมชอบกินข้าว", None, false)); // ["ผม", "ชอบ", "กิน", "ข้าว"]
     println!("{}", romanize("กาแฟ"));          // kafae
     println!("{}", udom83("รัก"));             // ร100000
     println!("{}", num_to_thaiword(21));       // ยี่สิบเอ็ด

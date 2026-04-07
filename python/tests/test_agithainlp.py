@@ -19,7 +19,7 @@ from agithainlp import (
     thai_symbols,
     thai_characters,
 )
-from agithainlp.tokenize import tcc_tokenize, syllable_tokenize, sent_tokenize
+from agithainlp.tokenize import tcc_tokenize, syllable_tokenize, sent_tokenize, word_tokenize
 from agithainlp.transliterate import romanize
 from agithainlp.soundex import soundex, udom83, lk82
 from agithainlp.util import (
@@ -152,6 +152,76 @@ class TestSentTokenize:
         result = sent_tokenize("Hello world. How are you?")
         assert "Hello world." in result
         assert "How are you?" in result
+
+
+# ---------------------------------------------------------------------------
+# NewMM word tokenization
+# ---------------------------------------------------------------------------
+
+class TestWordTokenize:
+    def test_empty(self):
+        assert word_tokenize("") == []
+
+    def test_non_string(self):
+        assert word_tokenize(None) == []  # type: ignore[arg-type]
+
+    def test_reconstruct(self):
+        """Joining tokens (excluding whitespace) should reproduce Thai text."""
+        text = "ผมชอบกินข้าว"
+        tokens = word_tokenize(text, keep_whitespace=False)
+        assert "".join(tokens) == text
+
+    def test_known_words(self):
+        """Words in the built-in dictionary should appear as single tokens."""
+        tokens = word_tokenize("วันนี้ดีมาก", keep_whitespace=False)
+        # 'วันนี้' and 'ดีมาก' are both in the built-in word list
+        assert "วันนี้" in tokens
+        # Either as 'ดีมาก' (whole, since it's in the dict) or 'ดี'+'มาก'
+        assert any(t in ("ดีมาก", "ดี") for t in tokens)
+        assert "".join(tokens) == "วันนี้ดีมาก"
+
+    def test_custom_dict(self):
+        """A custom dictionary should override the built-in word list."""
+        custom = frozenset(["ประเทศไทย", "สวยงาม"])
+        tokens = word_tokenize("ประเทศไทยสวยงาม", custom_dict=custom, keep_whitespace=False)
+        assert "ประเทศไทย" in tokens
+        assert "สวยงาม" in tokens
+
+    def test_whitespace_preserved(self):
+        """Whitespace is kept when keep_whitespace=True (default)."""
+        tokens = word_tokenize("I love กาแฟ")
+        assert " " in tokens
+
+    def test_whitespace_dropped(self):
+        """Whitespace is dropped when keep_whitespace=False."""
+        tokens = word_tokenize("I love กาแฟ", keep_whitespace=False)
+        assert " " not in tokens
+
+    def test_mixed_thai_ascii(self):
+        """Mixed Thai and ASCII text is split correctly."""
+        tokens = word_tokenize("I love ข้าวผัด", keep_whitespace=False)
+        assert "I" in tokens
+        assert "love" in tokens
+
+    def test_tcc_fallback(self):
+        """Unknown Thai text is split at TCC boundaries (not character by character)."""
+        # 'กาแฟ' — even if not in custom_dict, TCC gives ['กา','แฟ']
+        tokens = word_tokenize("กาแฟ", custom_dict=frozenset(), keep_whitespace=False)
+        # Should produce TCC-level tokens, not individual characters
+        assert len(tokens) <= 2  # at most 2 TCC units
+        assert "".join(tokens) == "กาแฟ"
+
+    def test_returns_list(self):
+        result = word_tokenize("ภาษาไทย")
+        assert isinstance(result, list)
+        assert all(isinstance(t, str) for t in result)
+
+    def test_word_tokenize_top_level_import(self):
+        """word_tokenize should be importable directly from agithainlp."""
+        import agithainlp
+        assert hasattr(agithainlp, "word_tokenize")
+        result = agithainlp.word_tokenize("ดีมาก", keep_whitespace=False)
+        assert isinstance(result, list)
 
 
 # ---------------------------------------------------------------------------

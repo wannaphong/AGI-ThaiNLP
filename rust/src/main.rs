@@ -6,8 +6,8 @@ fn main() {
     println!("Thai consonants ({} total): {}", consonants.len(), THAI_CONSONANTS);
 
     let text = "กาแฟ";
-    let tokens = tcc_tokenize(text);
-    println!("TCC tokens for \"{text}\": {tokens:?}");
+    let tcc_tokens = tcc_tokenize(text);
+    println!("TCC tokens for \"{text}\": {tcc_tokens:?}");
 
     let roman = romanize(text);
     println!("Romanize \"{text}\": {roman}");
@@ -20,4 +20,10 @@ fn main() {
 
     println!("num_to_thaiword(21) = {}", num_to_thaiword(21));
     println!("thai_digit_to_arabic_digit(\"๑๒๓\") = {}", thai_digit_to_arabic_digit("๑๒๓"));
+
+    let words = word_tokenize("ผมชอบกินข้าวผัด", None, false);
+    println!("NewMM word_tokenize(\"ผมชอบกินข้าวผัด\"): {words:?}");
+
+    let mixed = word_tokenize("I love ข้าวผัด", None, true);
+    println!("NewMM word_tokenize(\"I love ข้าวผัด\"): {mixed:?}");
 }

@@ -53,6 +53,7 @@ __all__ = [
     "tcc_tokenize",
     "syllable_tokenize",
     "sent_tokenize",
+    "word_tokenize",
     # Transliteration
     "romanize",
     # Soundex
@@ -68,7 +69,7 @@ __all__ = [
     "remove_tonemark",
 ]
 
-from agithainlp.tokenize import tcc_tokenize, syllable_tokenize, sent_tokenize
+from agithainlp.tokenize import tcc_tokenize, syllable_tokenize, sent_tokenize, word_tokenize
 from agithainlp.transliterate import romanize
 from agithainlp.soundex import soundex, udom83, lk82
 from agithainlp.util import (
