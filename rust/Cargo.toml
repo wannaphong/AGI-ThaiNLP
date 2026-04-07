@@ -1,0 +1,21 @@
+[package]
+name = "agi-thainlp"
+version = "0.1.0"
+edition = "2021"
+description = "Thai NLP functions rewritten from scratch — no PyThaiNLP resources required"
+license = "Apache-2.0"
+keywords = ["thai", "nlp", "tokenizer", "romanize", "soundex"]
+
+[lib]
+name = "agi_thainlp"
+path = "src/lib.rs"
+
+[[bin]]
+name = "agi-thainlp"
+path = "src/main.rs"
+
+[dependencies]
+regex = "1"
+once_cell = "1"
+
+[dev-dependencies]
